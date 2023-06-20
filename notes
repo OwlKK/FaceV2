@@ -1,0 +1,19 @@
+GeForce 1080 ti is CUDA compatible - COOL
+
+https://stackoverflow.com/questions/75654711/why-does-pip-not-install-tensorflow-version-below-2-12
+tensorflow 2.10 supports gpu
+tensorflow 2.12 does not
+
+DOWNGRADED TENSORFLOW TO 2.10
+
+Downloaded CUDA toolkit 12.1
+Downloaded
+
+LOGS ARE FINALLY SENT INTO THE SAME FOLDER
+RUNS SECOND EPOCH WITHOUT TROUBLE
+
+TODO
+Stop turning CPU into a fucking heater by:
+make tensorflow use GPU instead of CPU
+
+TENSORFLOW SHOULD USE GPU BY DEFAULT BUT IS NOT DETECTING IT
