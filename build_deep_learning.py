@@ -3,10 +3,7 @@
 from abc import ABC
 
 import os
-import shutil
-import cv2
 import tensorflow as tf
-import numpy as np
 from matplotlib import pyplot as plt
 
 from keras.models import Model, load_model  # base model class
@@ -15,7 +12,7 @@ from keras.applications import VGG16  # VGG16 acts here as base network
 
 from load_aug_img_and_labels_to_tf_dataset import create_final_datasets
 
-# hack to remove error #15 when finishing training
+# EVIL HACK to remove error #15 when finishing training
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'true'
 
 # CANT RUN THIS ON GPU SO IT DOESN'T MATTER
@@ -211,9 +208,9 @@ logdir = 'logs'
 # if os.path.exists(logdir):
 #     shutil.rmtree(logdir)
 
-# create the folder for tensorflow to write
+# create the folder again for tensorflow to write
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir)  # tensorboard for visualizing metrics
-hist = model.fit(train, epochs=10, validation_data=val, callbacks=[tensorboard_callback])  # INCREASE TO 10 LATER
+hist = model.fit(train, epochs=2, validation_data=val, callbacks=[tensorboard_callback])  # INCREASE TO 10 LATER
 # you can do train.take(123) to take in smaller batch
 
 # LIMIT NUMBER OF CORES USED IN PYCHARM TO 7 TO PREVENT CPU OVERLOAD Task manager -> processess -> details
@@ -249,69 +246,7 @@ ax[2].legend()
 plt.show()
 # val regressloss should not be jumping
 
-# MAKING PREDICTIONS on test set
-
-# test_data = test.as_numpy_iterator()
-# test_sample = test_data.next()
-# yhat = facetracker.predict(test_sample[0])
-#
-# fig, ax = plt.subplots(ncols=4, figsize=(20, 20))
-# for idx in range(4):
-#     sample_image = test_sample[0][idx]
-#     sample_coords = yhat[1][idx]
-#
-#     if yhat[0][idx] > 0.9:
-#         cv2.rectangle(sample_image,
-#                       tuple(np.multiply(sample_coords[:2], [120, 120]).astype(int)),
-#                       tuple(np.multiply(sample_coords[2:], [120, 120]).astype(int)),
-#                       (255, 0, 0), 2)
-#
-#     ax[idx].imshow(sample_image)
-
 # save the model
 facetracker.save('facetracker.h5')
 facetracker = load_model('facetracker.h5')
 
-# real-time detection
-
-# cap = cv2.VideoCapture(0)
-# while cap.isOpened():  # T/F based on if the cap object started capturing frames
-#     _, frame = cap.read()
-#     frame = frame[50:500, 50:500, :]
-#
-#     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RBG)  # -> changes default color format to RGB
-#     resized = tf.image.resize(rgb, (120, 120))
-#
-#     yhat = facetracker.predict(np.expand_dims(resized/255, 0))  # Insert a new axis that will appear at the 'axis'
-#                                                                 # position in the expanded array shape
-#                                                                 # here 'axis' is 0 position
-#     sample_coords = yhat[0][1]
-#
-#     if yhat[0] > 0.5:
-#         # main rectangle
-#         cv2.rectangle(frame,
-#                       tuple(np.multiply(sample_coords[:2], [450, 450]).astype(int)),
-#                       tuple(np.multiply(sample_coords[2:], [450, 450]).astype(int)),
-#                       (255, 0, 0), 2)
-#
-#         # label rectangle
-#         cv2.rectangle(frame,
-#                       tuple(np.add(np.multiply(sample_coords[:2], [450, 450]).astype(int),
-#                                    [0, -30])),
-#                       tuple(np.add(np.multiply(sample_coords[:2], [450, 450]).astype(int),
-#                                    [80, 0])),
-#                       (255, 0, 0), -1)
-#
-#         # text rendered
-#         cv2.putText(frame, 'face', tuple(np.add(np.multiply(sample_coords[:2], [450, 450]).astype(int), [0, -5])),
-#                     cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
-#
-#     cv2.imshow('EyeTrack', frame)
-#
-#     if cv2.waitKey(1) & 0xFF == ord('q'):
-#         break
-#
-# cap.release()
-# cv2.destroyAllWindows()
-
-# Code 3. The system cannot find the path specified.
